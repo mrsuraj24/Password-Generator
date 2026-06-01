@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 function App() {
   const [length, setLength] = useState(8)
@@ -20,14 +23,24 @@ function App() {
   useEffect(()=>{
     passwordGenerator()
   },[length,char,num,passwordGenerator])
+  // useRef Hook
+  const passwordRef = useRef(null)
+
+  const copyPassword = useCallback(()=>{
+    passwordRef.current?.select()
+    window.navigator.clipboard.writeText(password)
+    toast.success("Copy to clipboard!")
+  },[password])
   return (
     <>
-      <div className="bg-teal-600 min-h-screen flex items-center justify-center">
-        <div className="shadow-2xl bg-teal-700 p-15">
+
+      <ToastContainer />
+      <div className="bg-teal-800/90 min-h-screen flex items-center justify-center">
+        <div className="shadow-2xl bg-teal-700/20 p-15">
           <h1 className="text-2xl text-center">Generate Your Password</h1>
           <div className="flex p-5">
-            <input type="text" value={password} className="bg-white text-black outline-none w-full rounded-l-2xl px-3 py-2 read-only:" />
-            <button className="bg-blue-600 rounded-r-2xl px-3 py-2 shrink-0">Copy</button>
+            <input type="text" value={password} ref={passwordRef} className="bg-white text-black outline-none w-full rounded-l-2xl px-3 py-2 read-only:" />
+            <button onClick={copyPassword} className="bg-blue-600 cursor-pointer rounded-r-2xl px-3 py-2 shrink-0">Copy</button>
           </div>
           <div className="flex text-sm gap-x-2">
             <div className="flex items-center gap-x-1">
